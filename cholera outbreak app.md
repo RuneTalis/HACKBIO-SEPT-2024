@@ -1,7 +1,7 @@
 Objective:
-In this task, you will work in teams — 2 AMR epidemiologist and 4 front-end bioinformaticians — to improve the visualization and reporting of cholera outbreak data from the World Health Organization (WHO). Your goal is to create an intuitive and interactive Shiny app that visualizes the cholera outbreak data and provides insightful summaries and reports for any selected country.
+In this task, you will work in teams — 2 AMR epidemiologists and 4 front-end bioinformaticians — to improve the visualization and reporting of cholera outbreak data from the World Health Organization (WHO). Your goal is to create an intuitive and interactive Shiny app that visualizes the cholera outbreak data and provides insightful summaries and reports for any selected country.
 Form a Team:
-Form a team consisting of 2 epidemiologist and 4 front-end bioinformatician.
+Form a team consisting of 2 epidemiologists and 4 front-end bioinformaticians.
 Download Raw Cholera Outbreak Data:
 Go to the WHO website (https://apps.who.int/gho/data/node.main.174?lang=en) and download the raw cholera outbreak data.
 Innovative Visualization and Reporting (Epidemiologist):
