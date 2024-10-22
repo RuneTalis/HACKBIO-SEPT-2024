@@ -1,1 +1,284 @@
+**Functional Enrichment Analysis App Documentation:**
+
+**Overview :**
+
+This R shiny app is designed to perform functional enrichment analysis using 2 functions; TCGAanalyze\_EAcomplete () and TCGA\_EAbarplot () from the TCGAbiolinks package found in Bioconductor 3.19. The application features a textbox to input a list of genes, and a button written ‘Run Enrichment Analysis’ to click on and the resulting output will be 4 charts on the right-side of the following, GO: Biological Process (orange chart), GO: Cellular Component (Blue chart), GO: Molecular Function (Green chart, and Pathways (yellow chart).
+
+Code Breakdown:
+
+<!--[if !supportLists]-->1.     <!--[endif]-->Loading the necessary libraries
+
+library(BiocManager)
+
+library(TCGAbiolinks)
+
+library(dplyr)
+
+library(shiny)
+
+library(shinydashboard)
+
+<!--[if !supportLists]-->·       <!--[endif]-->The BiocManager library allows users to install and manage packages from the Bioconductor 3.19 project for comprehension and analysis of genomic data.
+
+<!--[if !supportLists]-->·       <!--[endif]-->The TCGAbiolinks library enables access to the TCGA (The Cancer Genome Atlas) data for RNA-seq analysis and functional enrichment.
+
+<!--[if !supportLists]-->·       <!--[endif]-->The dplyr library eases data manipulation as it has additional functions.
+
+<!--[if !supportLists]-->·       <!--[endif]-->The shiny library provides the framework for building the web application.
+
+<!--[if !supportLists]-->·       <!--[endif]-->The shinydashboard library adds the user interface components, i.e., side bars and tabs to the Shiny app.
+
+<!--[if !supportLists]-->2.     <!--[endif]-->Organisms Data
+
+org\_df <- data.frame(id = 1:7,
+
+                     scientific\_name = c("Homo sapiens", "Anopheles gambiae","Mus musculus", "Arabidopsis thaliana", "Passer domesticus", "Panthera leo", "Giraffa camelopardalis"),
+
+                     common\_name = c("Human", "African malaria mosquito", "House mouse", "Thale cress", "Common sparrow", "African lion", "Northern giraffe"),
+
+                     ncbi\_tax\_id = c("9606", "7165", "10090", "3702", "48849", "9689", "9894"),
+
+                     stringsAsFactors = FALSE)
+
+The above code defines the organisms available for enrichment analysis and storing their scientific names, common names, NCBI taxonomy IDs in a dataframe.
+
+<!--[if !supportLists]-->3.     <!--[endif]-->User Interface Layout:
+
+ui <- dashboardPage(
+
+  dashboardHeader(title = "Functional Enrichment Analysis App"),
+
+ 
+
+  dashboardSidebar(
+
+    sidebarMenu(menuItem("Home", tabName = "home", icon = icon("home")),
+
+                menuItem("Enrichment Analysis", tabName = "analysis", icon = icon("bar-chart")),
+
+                menuItem("Contacts", tabName = "contact", icon("envelope"))
+
+                )
+
+  ),
+
+ 
+
+dashboardBody(
+
+  tabItems(
+
+ 
+
+ tabItem(
+
+   tabName = "home",
+
+    fluidPage(
+
+      h1("Welcome to the Functional Enrichment Analyis Application"),
+
+      p("This interactive app is designed to perform enrichment analysis on any gene lists and displays their functions in pathways, molecular processes, biological processes, cellular components."),
+
+      p("Use the side bar to navigate through the app.")
+
+    )
+
+       )
+
+         ),
+
+ tabItem(tabName = "analysis",
+
+         fluidRow(
+
+           box (
+
+             title = "Functional Enrichment Analysis App", status = "primary", solidHeader = TRUE, width = 4,
+
+             selectInput("speciesSelect", "Select Annotated Species:", choices = org\_df$scientific\_name),
+
+             textAreaInput("gene\_list", "Paste your genes here(comma-separated):", "", rows = 5),
+
+             actionButton("analyze", "Run Enrichment Analysis")
+
+           ),
+
+          box(
+
+            title = "Results", status = "primary", solidHeader = TRUE, width = 10,
+
+            plotOutput("enrichment\_plot")
+
+             )
+
+                )
+
+        ),
+
+ tabItem(tabName = "contacts",
+
+         fluidPage(
+
+           h2("Contact Us"),
+
+           p("For any inquiries, reach out via:"),
+
+           p("Email: pollanda\@outlook.com"),
+
+           p("Slack: @Pollanda,@HackBio Cancer Internship 2024")
+
+          )
+
+         )
+
+)
+
+)
+
+The UI layout contains:
+
+<!--[if !supportLists]-->·       <!--[endif]-->dashboardHeader(): Displays the title "Functional Enrichment Analysis App" at the top of the dashboard.
+
+<!--[if !supportLists]-->·       <!--[endif]-->sidebarMenu(): Provides navigation through the app with the following menu items:
+
+<!--[if !supportLists]-->·       <!--[endif]-->menuItem(): "Home" - Allows the user to navigate to the home tab.
+
+<!--[if !supportLists]-->·       <!--[endif]-->menuItem(): "Enrichment Analysis" - Allows the user to navigate to the analysis tab.
+
+<!--[if !supportLists]-->·       <!--[endif]-->menuItem(): "Contacts" - Allows the user to navigate to the contact tab.
+
+<!--[if !supportLists]-->·       <!--[endif]-->tabItems(): Defines the contents of each tab in the app:
+
+<!--[if !supportLists]-->·       <!--[endif]-->tabItem() for "Home":
+
+<!--[if !supportLists]-->·       <!--[endif]-->fluidPage(): Contains the welcome message and general description of the app.
+
+<!--[if !supportLists]-->·       <!--[endif]-->tabItem() for "Enrichment Analysis":
+
+<!--[if !supportLists]-->·       <!--[endif]-->selectInput(): Allows the user to choose a species for enrichment analysis from the list defined earlier (via \`org\_df$scientific\_name\`).
+
+<!--[if !supportLists]-->·       <!--[endif]-->textAreaInput(): Allows the user to input a list of genes (comma-separated) for analysis.
+
+<!--[if !supportLists]-->·       <!--[endif]-->actionButton(): Triggers the enrichment analysis when clicked.
+
+<!--[if !supportLists]-->·       <!--[endif]-->plotOutput(): Displays the results of the enrichment analysis as a plot.
+
+<!--[if !supportLists]-->·       <!--[endif]-->tabItem() for "Contacts":
+
+<!--[if !supportLists]-->·       <!--[endif]-->fluidPage(): Displays the contact information including email and Slack for inquiries.
+
+This description covers the key components of the user interface in the Functional Enrichment Analysis App.
+
+<!--[if !supportLists]-->4.     <!--[endif]-->Server Logic:
+
+  gene\_sets <- list(
+
+    "Example list of genes" = c("HBB", "SERPINA1", "VWF", "AGAP007752", "PER"),
+
+    "Another list of genes" = c("MEF2", "Mhc", "Pax7", "MYOSIN XI", "ACTA1","MYH") )
+
+  Defines a gene list of your own preference.
+
+gene\_list <- reactive({
+
+    strsplit(input$gene\_list, ",")\[\[1]]
+
+  })
+
+<!--[if !supportLists]-->·       <!--[endif]-->The reactive() will convert the user input (comma-separated) into a list.
+
+enrich\_result <- reactive({
+
+    TCGAanalyze\_EAcomplete(
+
+      TFname = "Example list of genes",
+
+      RegulonList = gene\_list()
+
+    )
+
+  })
+
+<!--[if !supportLists]-->·       <!--[endif]-->reactive (): Creates a reactive expression that dynamically updates when the input data changes. In this case, it will react to changes in the gene list provided by the user.
+
+<!--[if !supportLists]-->·       <!--[endif]-->TCGAanalyze\_EAcomplete (): Performs the complete functional enrichment analysis using the input gene list. It includes the following parameters:
+
+<!--[if !supportLists]-->·       <!--[endif]-->TFname: Sets the name for the analysis, here specified as "Example list of genes".
+
+<!--[if !supportLists]-->·       <!--[endif]-->RegulonList: Supplies the list of genes for analysis, obtained from the gene\_list() input provided by the user.
+
+output$enrichment\_plot <- renderPlot(
+
+    TCGAvisualize\_EAbarplot(
+
+      tf = "Example list of genes",
+
+      GOMFTab = enrich\_result()$ResMF, #this will generate molecular function results
+
+      GOBPTab = enrich\_result()$ResBP, #this will generate biological process results
+
+      GOCCTab = enrich\_result()$ResCC, #this will generate cellular component results
+
+      PathTab = enrich\_result()$ResPat,#this will generate pathway term results
+
+      nBar = 10,
+
+      nRGTab = NULL,
+
+      filename = NULL,
+
+      text.size = 1,
+
+      mfrow = c(2,2), #will give 2 rows and 2 column
+
+      xlim = NULL,
+
+      color = c("orange","cyan", "green", "yellow" )
+
+    ))
+
+  The following section contains:
+
+<!--[if !supportLists]-->·       <!--[endif]-->output$enrichment\_plot: Defines the output plot area in the UI where the enrichment analysis results will be displayed.
+
+<!--[if !supportLists]-->·       <!--[endif]-->renderPlot(): Creates a plot that dynamically renders based on the results of the enrichment analysis.
+
+<!--[if !supportLists]-->·       <!--[endif]-->TCGAvisualize\_EAbarplot(): Generates a bar plot visualizing the enrichment analysis results, with the following parameters:
+
+<!--[if !supportLists]-->·       <!--[endif]-->tf: Specifies the title of the plot, set to "Example list of genes".
+
+<!--[if !supportLists]-->·       <!--[endif]-->GOMFTab: Displays the results for molecular function, taken from \`enrich\_result()$ResMF\`.
+
+<!--[if !supportLists]-->·       <!--[endif]-->GOBPTab: Displays the results for biological processes, taken from \`enrich\_result()$ResBP\`.
+
+<!--[if !supportLists]-->·       <!--[endif]-->GOCCTab: Displays the results for cellular components, taken from \`enrich\_result()$ResCC\`.
+
+<!--[if !supportLists]-->·       <!--[endif]-->PathTab: Displays the results for pathway terms, taken from \`enrich\_result()$ResPat\`.
+
+<!--[if !supportLists]-->·       <!--[endif]-->nBar: Sets the number of bars to be displayed in each plot (10 in this case).
+
+<!--[if !supportLists]-->·       <!--[endif]-->nRGTab: Optional parameter for regulating the number of genes (set to \`NULL\` here).
+
+<!--[if !supportLists]-->·       <!--[endif]-->filename: Optional parameter to save the plot to a file (set to \`NULL\` here, meaning no file will be saved).
+
+<!--[if !supportLists]-->·       <!--[endif]-->text.size: Controls the text size in the plot (set to 1).
+
+<!--[if !supportLists]-->·       <!--[endif]-->mfrow: Defines the layout of the plot with 2 rows and 2 columns for displaying the results.
+
+<!--[if !supportLists]-->·       <!--[endif]-->xlim: Defines the x-axis limits for the plot (set to \`NULL\` here, meaning it will auto-scale).
+
+<!--[if !supportLists]-->·       <!--[endif]-->color: Specifies the colors for the different result categories, using orange, cyan, green, and yellow.
+
+This reactive plot will render the results of the enrichment analysis in a bar plot format, categorized by molecular function, biological process, cellular component, and pathway terms.
+
+ 
+
+shinyApp(ui = ui, server = server)
+
+<!--[if !supportLists]-->·       <!--[endif]-->shinyApp(): Launches the Shiny application by combining the user interface (ui) and server logic (server).
+
+<!--[if !supportLists]-->·       <!--[endif]-->ui: Defines the layout and structure of the app, as outlined in your previous dashboardPage() setup.
+
+<!--[if !supportLists]-->·       <!--[endif]-->server: Contains the server-side logic that reacts to user inputs and performs the enrichment analysis, such as processing the gene list, running the analysis, and rendering the plots (e.g., with TCGAanalyze\_EAcomplete() and TCGAvisualize\_EAbarplot())
 
