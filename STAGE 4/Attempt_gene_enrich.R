@@ -110,5 +110,5 @@ server <- function(input, output) {
 
 shinyApp(ui = ui, server = server)
 
-rsconnect::deployApp(appDir = "C:/Users/polla/OneDrive/Documents/attempt2_gene_enrichment", appPrimaryDoc = "app.R",  quarto = FALSE)
+#rsconnect::deployApp(appDir = "C:/Users/polla/OneDrive/Documents/attempt2_gene_enrichment", appPrimaryDoc = "app.R",  quarto = FALSE)
 
