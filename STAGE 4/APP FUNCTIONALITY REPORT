@@ -1,0 +1,25 @@
+**App Functionality, Methods, and Challenges: A Simple Overview**
+
+<!--[if !supportLists]-->**1.     **<!--[endif]-->**App Functionality**:
+
+The app helps users analyse biological data, like gene lists, to find which biological functions or pathways are more common than expected. Users upload their data, and the app shows which biological processes are important.
+It also provides visual results like charts or graphs to make it easy to understand.
+
+**2. Methods Used for Analysis**
+
+- **Data Input**: The app reads data provided by the user, such as a list of genes or proteins.
+- **Enrichment Analysis**: It uses statistical tests to check if certain biological processes or pathways are overrepresented in the data. 
+This involves comparing the user's data with known biological databases.
+- **Results Visualization**: The app uses charts and graphs to show the enriched biological pathways, helping users to quickly see the important results.
+
+**3. Challenges Encountered**
+
+- **Data Handling**: Dealing with large datasets without slowing the app down can be tricky. 
+The app needs to handle different types of input data.
+- **Deployment issues**: Had difficulty deploying the app during publication onto the shinyapps.io website. 
+Recommend looking at logs to find the error.
+
+Here is a link to the app https://pollanda.shinyapps.io/analysis_enrich/
+ 
+
+ 
